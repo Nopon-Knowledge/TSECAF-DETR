@@ -22,9 +22,9 @@ except ModuleNotFoundError:
 GENERALIZATION_PRESETS = {
     "r50_baseline_vs_small_object_aware_transfer": {
         "title": "Cross-dataset Generalization from GWHD2021",
-        "subtitle": "Train on GWHD2021, evaluate on target datasets",
+        "subtitle": "Train on GWHD2021, evaluate the same evidence-to-query pathway on target datasets",
         "output_dir": str(PROJECT_ROOT / "vis_results" / "generalization"),
-        "output_name": "r50_baseline_vs_small_object_aware_transfer.svg",
+        "output_name": "r50_baseline_vs_tsecaf_detr_transfer.svg",
         "datasets": [
             {
                 "label": "GWHD2021",
@@ -44,6 +44,10 @@ GENERALIZATION_PRESETS = {
         ],
     },
 }
+
+GENERALIZATION_PRESETS["r50_baseline_vs_tsecaf_detr_transfer"] = GENERALIZATION_PRESETS[
+    "r50_baseline_vs_small_object_aware_transfer"
+]
 
 
 def ap_from_eval(eval_path: Path) -> float:
@@ -93,7 +97,7 @@ def save_svg(preset: Dict[str, object], rows: List[Dict[str, float]]) -> Path:
 
     legend_x = width - margin_right - 230
     legend_y = 48
-    legend = [("R50 Baseline", "#1f77b4"), ("R50 + Small-Object-Aware", "#d62728")]
+    legend = [("RT-DETRv2-R50", "#1f77b4"), ("TSECAF-DETR-R50", "#d62728")]
     for idx, (label, color) in enumerate(legend):
         y = legend_y + idx * 24
         parts.append(f'<rect x="{legend_x}" y="{y - 10}" width="18" height="18" fill="{color}" />')
@@ -131,6 +135,6 @@ def main(args) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Plot grouped-bar cross-dataset generalization figures.")
-    parser.add_argument("--preset", choices=sorted(GENERALIZATION_PRESETS), default="r50_baseline_vs_small_object_aware_transfer")
+    parser.add_argument("--preset", choices=sorted(GENERALIZATION_PRESETS), default="r50_baseline_vs_tsecaf_detr_transfer")
     args = parser.parse_args()
     main(args)

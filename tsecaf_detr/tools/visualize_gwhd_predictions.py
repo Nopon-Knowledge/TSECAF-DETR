@@ -1,5 +1,4 @@
-"""Visualize RT-DETRv2 detections on one image or a directory of images.
-"""
+"""Visualize TSECAF-DETR detections on one image or a directory of images."""
 
 import os
 import sys
@@ -25,7 +24,7 @@ except ModuleNotFoundError:
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 VIS_PRESETS = {
     "small_object_aware_rtdetr_r18_val_best": {
-        "description": "Visualize GWHD2021 validation predictions from the Small-Object-Aware RT-DETR R18 best checkpoint.",
+        "description": "Legacy alias for TSECAF-DETR-R18 validation prediction visualization.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r18vd_120e_gwhd.yml",
         "resume": str(PROJECT_ROOT / "output" / "small_object_aware_rtdetr_r18vd_120e_gwhd" / "best.pth"),
         "input": str(DATASETS_ROOT / "gwhd_2021" / "val2017"),
@@ -36,7 +35,7 @@ VIS_PRESETS = {
         "input_size": None,
     },
     "small_object_aware_rtdetr_r50_val_best": {
-        "description": "Visualize GWHD2021 validation predictions from the Small-Object-Aware RT-DETR R50 best checkpoint.",
+        "description": "Legacy alias for TSECAF-DETR-R50 validation prediction visualization.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_180e_gwhd.yml",
         "resume": str(PROJECT_ROOT / "output" / "small_object_aware_rtdetr_r50vd_180e_gwhd" / "best.pth"),
         "input": str(DATASETS_ROOT / "gwhd_2021" / "val2017"),
@@ -47,6 +46,23 @@ VIS_PRESETS = {
         "input_size": None,
     },
 }
+
+VIS_PRESETS.update({
+    "tsecaf_detr_r18_val_best": {
+        **VIS_PRESETS["small_object_aware_rtdetr_r18_val_best"],
+        "description": "Visualize GWHD2021 validation predictions from the TSECAF-DETR-R18 best checkpoint.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r18vd_120e_gwhd.yml",
+        "resume": str(PROJECT_ROOT / "output" / "tsecaf_detr_r18vd_120e_gwhd" / "best.pth"),
+        "output_dir": str(PROJECT_ROOT / "vis_results" / "tsecaf_detr_r18_val_best"),
+    },
+    "tsecaf_detr_r50_val_best": {
+        **VIS_PRESETS["small_object_aware_rtdetr_r50_val_best"],
+        "description": "Visualize GWHD2021 validation predictions from the TSECAF-DETR-R50 best checkpoint.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r50vd_180e_gwhd.yml",
+        "resume": str(PROJECT_ROOT / "output" / "tsecaf_detr_r50vd_180e_gwhd" / "best.pth"),
+        "output_dir": str(PROJECT_ROOT / "vis_results" / "tsecaf_detr_r50_val_best"),
+    },
+})
 
 
 def collect_images(path: Path) -> List[Path]:
@@ -176,8 +192,8 @@ def main(args) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Visualize RT-DETRv2 detections for GWHD images.")
-    parser.add_argument("--preset", choices=sorted(VIS_PRESETS), default="small_object_aware_rtdetr_r18_val_best")
+    parser = argparse.ArgumentParser(description="Visualize TSECAF-DETR detections for GWHD images.")
+    parser.add_argument("--preset", choices=sorted(VIS_PRESETS), default="tsecaf_detr_r18_val_best")
     parser.add_argument("-c", "--config", type=str, help="Config path. Defaults to the selected preset.")
     parser.add_argument("-r", "--resume", type=str, help="Checkpoint path. Defaults to the selected preset.")
     parser.add_argument("-i", "--input", type=str, help="Input image or directory. Defaults to the selected preset.")

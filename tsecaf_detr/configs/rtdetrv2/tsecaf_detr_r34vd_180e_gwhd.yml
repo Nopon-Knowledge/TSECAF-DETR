@@ -1,0 +1,5 @@
+__include__: [
+  './small_object_aware_rtdetr_r34vd_180e_gwhd.yml',
+]
+
+output_dir: ./output/tsecaf_detr_r34vd_180e_gwhd

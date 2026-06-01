@@ -542,6 +542,8 @@ class RTDETRTransformerv2(nn.Module):
         elif self.query_select_method == 'agnostic':
             _, topk_ind = torch.topk(outputs_logits.squeeze(-1), topk, dim=-1)
         elif self.query_select_method == 'agnostic_small':
+            # TSECAF-DETR query allocation: keep decoder capacity aligned with
+            # compact proposals exposed by the upstream evidence pathway.
             pred_boxes = F.sigmoid(outputs_coords_unact)
             pred_area = pred_boxes[..., 2] * pred_boxes[..., 3]
             scores = outputs_logits.squeeze(-1) - self.query_size_prior * pred_area

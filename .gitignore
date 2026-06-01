@@ -178,11 +178,11 @@ cython_debug/
 /vis_results/
 /logs/
 /runs/
-small_object_aware_rtdetr/datasets/
-small_object_aware_rtdetr/output/
-small_object_aware_rtdetr/vis_results/
-small_object_aware_rtdetr/logs/
-small_object_aware_rtdetr/runs/
+tsecaf_detr/datasets/
+tsecaf_detr/output/
+tsecaf_detr/vis_results/
+tsecaf_detr/logs/
+tsecaf_detr/runs/
 
 # Local scratch files
 test.py

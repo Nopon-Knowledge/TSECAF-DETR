@@ -1,5 +1,4 @@
-"""Convenience launcher for wheat detection datasets on single A40.
-"""
+"""Training launcher for TSECAF-DETR wheat-head experiments on a single A40."""
 
 import os
 import sys
@@ -50,46 +49,80 @@ TRAINING_PRESETS = {
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "small_object_aware_rtdetr_r18": {
-        "description": "RT-DETRv2-R18 with Wheat-TS-ECAF and agnostic_small query selection.",
+        "description": "Legacy alias for TSECAF-DETR-R18.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r18vd_120e_gwhd.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r18vd_120e_coco_rerun_48.1.pth"),
     },
     "small_object_aware_rtdetr_r34": {
-        "description": "RT-DETRv2-R34 with Wheat-TS-ECAF and agnostic_small query selection.",
+        "description": "Legacy alias for TSECAF-DETR-R34.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r34vd_180e_gwhd.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r34vd_120e_coco_ema.pth"),
     },
     "small_object_aware_rtdetr_r50": {
-        "description": "RT-DETRv2-R50 with Wheat-TS-ECAF and agnostic_small query selection.",
+        "description": "Legacy alias for TSECAF-DETR-R50.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_180e_gwhd.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "ablation_baseline_r50": {
-        "description": "RT-DETRv2-R50 GWHD ablation baseline used as the reference for the small-object-aware component study.",
+        "description": "RT-DETRv2-R50 controlled reference for pathway ablation.",
         "config": "configs/rtdetrv2/rtdetrv2_r50vd_180e_gwhd_baseline.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "ablation_wheat_fusion_r50": {
-        "description": "RT-DETRv2-R50 GWHD ablation with Wheat fusion only.",
+        "description": "Pathway probe: context-detail representation before proposal generation.",
         "config": "configs/rtdetrv2/rtdetrv2_r50vd_180e_gwhd_ablation_wheat_fusion.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "ablation_detail_enhance_r50": {
-        "description": "RT-DETRv2-R50 GWHD ablation with low-level detail enhancement only.",
+        "description": "Pathway probe: detail-branch emphasis at the high-resolution evidence stage.",
         "config": "configs/rtdetrv2/rtdetrv2_r50vd_180e_gwhd_ablation_detail_enhance.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "ablation_agnostic_small_r50": {
-        "description": "RT-DETRv2-R50 GWHD ablation with agnostic-small query selection only.",
+        "description": "Pathway probe: compact-query allocation before decoder refinement.",
         "config": "configs/rtdetrv2/rtdetrv2_r50vd_180e_gwhd_ablation_agnostic_small.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "ablation_full_small_object_aware_r50": {
-        "description": "RT-DETRv2-R50 GWHD full small-object-aware target with all proposed components enabled.",
+        "description": "Full TSECAF-DETR-R50 evidence-to-query pathway.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_180e_gwhd.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
 }
+
+TRAINING_PRESETS.update({
+    "tsecaf_detr_r18": {
+        **TRAINING_PRESETS["small_object_aware_rtdetr_r18"],
+        "description": "TSECAF-DETR-R18 representation-query co-design on GWHD2021.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r18vd_120e_gwhd.yml",
+    },
+    "tsecaf_detr_r34": {
+        **TRAINING_PRESETS["small_object_aware_rtdetr_r34"],
+        "description": "TSECAF-DETR-R34 representation-query co-design on GWHD2021.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r34vd_180e_gwhd.yml",
+    },
+    "tsecaf_detr_r50": {
+        **TRAINING_PRESETS["small_object_aware_rtdetr_r50"],
+        "description": "TSECAF-DETR-R50 representation-query co-design on GWHD2021.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r50vd_180e_gwhd.yml",
+    },
+    "pathway_context_detail_r50": {
+        **TRAINING_PRESETS["ablation_wheat_fusion_r50"],
+        "description": "Pathway probe: context-detail representation before proposal generation.",
+    },
+    "pathway_detail_branch_r50": {
+        **TRAINING_PRESETS["ablation_detail_enhance_r50"],
+        "description": "Pathway probe: detail-branch emphasis at the high-resolution evidence stage.",
+    },
+    "pathway_compact_query_r50": {
+        **TRAINING_PRESETS["ablation_agnostic_small_r50"],
+        "description": "Pathway probe: compact-query allocation before decoder refinement.",
+    },
+    "pathway_full_tsecaf_r50": {
+        **TRAINING_PRESETS["ablation_full_small_object_aware_r50"],
+        "description": "Full TSECAF-DETR-R50 evidence-to-query pathway.",
+    },
+})
 
 
 def configure_torch_runtime() -> None:
@@ -132,10 +165,10 @@ def main(args) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Train RT-DETRv2 on wheat detection datasets with preset hyperparameters."
+        description="Train RT-DETRv2 and TSECAF-DETR wheat-head detectors with preset hyperparameters."
     )
 
-    parser.add_argument("--preset", choices=sorted(TRAINING_PRESETS), default="small_object_aware_rtdetr_r18")
+    parser.add_argument("--preset", choices=sorted(TRAINING_PRESETS), default="tsecaf_detr_r18")
     parser.add_argument("-c", "--config", type=str, help="Config path. Defaults to the selected preset.")
     parser.add_argument("-r", "--resume", type=str, help="resume from checkpoint")
     parser.add_argument("-t", "--tuning", type=str, help="tuning from checkpoint")

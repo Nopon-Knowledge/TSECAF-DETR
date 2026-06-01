@@ -213,6 +213,8 @@ class WheatTokenStatisticsGate(nn.Module):
 
 
 class WheatDetailEnhancer(nn.Module):
+    """Preserve local boundary evidence before context-detail exchange."""
+
     def __init__(self, channels, act='silu'):
         super().__init__()
         self.pre = ConvNormLayer(channels, channels, 1, 1, act=act)
@@ -230,6 +232,8 @@ class WheatDetailEnhancer(nn.Module):
 
 
 class WheatTSECAFFusion(nn.Module):
+    """Statistics-guided context-detail coordination for compact evidence formation."""
+
     def __init__(self, channels, stats_reduction=4, context_reduction=4, context_kernel_size=11, act='silu'):
         super().__init__()
         self.context_anchor = WheatContextAnchor(
@@ -410,6 +414,8 @@ class HybridEncoder(nn.Module):
             )
 
         if self.wheat_fusion:
+            # TSECAF-DETR evidence formation: coordinate semantic context and
+            # local detail before encoder proposals are generated.
             self.wheat_fusion_blocks = nn.ModuleList([
                 WheatTSECAFFusion(
                     hidden_dim,

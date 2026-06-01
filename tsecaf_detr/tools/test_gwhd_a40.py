@@ -1,5 +1,4 @@
-"""Convenience evaluator for GWHD2021 on single A40.
-"""
+"""Evaluation launcher for TSECAF-DETR wheat-head experiments on a single A40."""
 
 import os
 import sys
@@ -46,19 +45,19 @@ EVAL_PRESETS = {
         "output_dir": _eval_dir("gwhd", "r50", "baseline"),
     },
     "small_object_aware_rtdetr_r18": {
-        "description": "Evaluate RT-DETRv2-R18 + Small-Object-Aware RT-DETR on GWHD2021.",
+        "description": "Legacy alias for evaluating TSECAF-DETR-R18 on GWHD2021.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r18vd_120e_gwhd.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r18vd_120e_gwhd"),
         "output_dir": _eval_dir("gwhd", "r18", "small_object_aware"),
     },
     "small_object_aware_rtdetr_r34": {
-        "description": "Evaluate RT-DETRv2-R34 + Small-Object-Aware RT-DETR on GWHD2021.",
+        "description": "Legacy alias for evaluating TSECAF-DETR-R34 on GWHD2021.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r34vd_180e_gwhd.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r34vd_180e_gwhd"),
         "output_dir": _eval_dir("gwhd", "r34", "small_object_aware"),
     },
     "small_object_aware_rtdetr_r50": {
-        "description": "Evaluate RT-DETRv2-R50 + Small-Object-Aware RT-DETR on GWHD2021.",
+        "description": "Legacy alias for evaluating TSECAF-DETR-R50 on GWHD2021.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_180e_gwhd.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r50vd_180e_gwhd"),
         "output_dir": _eval_dir("gwhd", "r50", "small_object_aware"),
@@ -70,7 +69,7 @@ EVAL_PRESETS = {
         "output_dir": _eval_dir("wheat_ears", "r18", "baseline"),
     },
     "wheat_ears_small_object_aware_r18": {
-        "description": "Direct transfer: R18 + Small-Object-Aware RT-DETR trained on GWHD2021, evaluated on Wheat Ears.",
+        "description": "Legacy alias for TSECAF-DETR-R18 direct transfer to Wheat Ears.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r18vd_eval_wheat_ears.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r18vd_120e_gwhd"),
         "output_dir": _eval_dir("wheat_ears", "r18", "small_object_aware"),
@@ -82,7 +81,7 @@ EVAL_PRESETS = {
         "output_dir": _eval_dir("wheat_ears", "r34", "baseline"),
     },
     "wheat_ears_small_object_aware_r34": {
-        "description": "Direct transfer: R34 + Small-Object-Aware RT-DETR trained on GWHD2021, evaluated on Wheat Ears.",
+        "description": "Legacy alias for TSECAF-DETR-R34 direct transfer to Wheat Ears.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r34vd_eval_wheat_ears.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r34vd_180e_gwhd"),
         "output_dir": _eval_dir("wheat_ears", "r34", "small_object_aware"),
@@ -94,7 +93,7 @@ EVAL_PRESETS = {
         "output_dir": _eval_dir("wheat_ears", "r50", "baseline"),
     },
     "wheat_ears_small_object_aware_r50": {
-        "description": "Direct transfer: R50 + Small-Object-Aware RT-DETR trained on GWHD2021, evaluated on Wheat Ears.",
+        "description": "Legacy alias for TSECAF-DETR-R50 direct transfer to Wheat Ears.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_eval_wheat_ears.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r50vd_180e_gwhd"),
         "output_dir": _eval_dir("wheat_ears", "r50", "small_object_aware"),
@@ -106,7 +105,7 @@ EVAL_PRESETS = {
         "output_dir": _eval_dir("global_wheat_codalab", "r18", "baseline"),
     },
     "global_wheat_codalab_small_object_aware_r18": {
-        "description": "Direct transfer: R18 + Small-Object-Aware RT-DETR trained on GWHD2021, evaluated on Global Wheat CodaLab.",
+        "description": "Legacy alias for TSECAF-DETR-R18 direct transfer to Global Wheat CodaLab.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r18vd_eval_global_wheat_codalab.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r18vd_120e_gwhd"),
         "output_dir": _eval_dir("global_wheat_codalab", "r18", "small_object_aware"),
@@ -118,7 +117,7 @@ EVAL_PRESETS = {
         "output_dir": _eval_dir("global_wheat_codalab", "r34", "baseline"),
     },
     "global_wheat_codalab_small_object_aware_r34": {
-        "description": "Direct transfer: R34 + Small-Object-Aware RT-DETR trained on GWHD2021, evaluated on Global Wheat CodaLab.",
+        "description": "Legacy alias for TSECAF-DETR-R34 direct transfer to Global Wheat CodaLab.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r34vd_eval_global_wheat_codalab.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r34vd_180e_gwhd"),
         "output_dir": _eval_dir("global_wheat_codalab", "r34", "small_object_aware"),
@@ -130,12 +129,78 @@ EVAL_PRESETS = {
         "output_dir": _eval_dir("global_wheat_codalab", "r50", "baseline"),
     },
     "global_wheat_codalab_small_object_aware_r50": {
-        "description": "Direct transfer: R50 + Small-Object-Aware RT-DETR trained on GWHD2021, evaluated on Global Wheat CodaLab.",
+        "description": "Legacy alias for TSECAF-DETR-R50 direct transfer to Global Wheat CodaLab.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_eval_global_wheat_codalab.yml",
         "resume": _checkpoint("small_object_aware_rtdetr_r50vd_180e_gwhd"),
         "output_dir": _eval_dir("global_wheat_codalab", "r50", "small_object_aware"),
     },
 }
+
+EVAL_PRESETS.update({
+    "tsecaf_detr_r18": {
+        **EVAL_PRESETS["small_object_aware_rtdetr_r18"],
+        "description": "Evaluate TSECAF-DETR-R18 on GWHD2021.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r18vd_120e_gwhd.yml",
+        "resume": _checkpoint("tsecaf_detr_r18vd_120e_gwhd"),
+        "output_dir": _eval_dir("gwhd", "r18", "tsecaf_detr"),
+    },
+    "tsecaf_detr_r34": {
+        **EVAL_PRESETS["small_object_aware_rtdetr_r34"],
+        "description": "Evaluate TSECAF-DETR-R34 on GWHD2021.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r34vd_180e_gwhd.yml",
+        "resume": _checkpoint("tsecaf_detr_r34vd_180e_gwhd"),
+        "output_dir": _eval_dir("gwhd", "r34", "tsecaf_detr"),
+    },
+    "tsecaf_detr_r50": {
+        **EVAL_PRESETS["small_object_aware_rtdetr_r50"],
+        "description": "Evaluate TSECAF-DETR-R50 on GWHD2021.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r50vd_180e_gwhd.yml",
+        "resume": _checkpoint("tsecaf_detr_r50vd_180e_gwhd"),
+        "output_dir": _eval_dir("gwhd", "r50", "tsecaf_detr"),
+    },
+    "wheat_ears_tsecaf_detr_r18": {
+        **EVAL_PRESETS["wheat_ears_small_object_aware_r18"],
+        "description": "Direct transfer: TSECAF-DETR-R18 trained on GWHD2021, evaluated on Wheat Ears.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r18vd_eval_wheat_ears.yml",
+        "resume": _checkpoint("tsecaf_detr_r18vd_120e_gwhd"),
+        "output_dir": _eval_dir("wheat_ears", "r18", "tsecaf_detr"),
+    },
+    "wheat_ears_tsecaf_detr_r34": {
+        **EVAL_PRESETS["wheat_ears_small_object_aware_r34"],
+        "description": "Direct transfer: TSECAF-DETR-R34 trained on GWHD2021, evaluated on Wheat Ears.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r34vd_eval_wheat_ears.yml",
+        "resume": _checkpoint("tsecaf_detr_r34vd_180e_gwhd"),
+        "output_dir": _eval_dir("wheat_ears", "r34", "tsecaf_detr"),
+    },
+    "wheat_ears_tsecaf_detr_r50": {
+        **EVAL_PRESETS["wheat_ears_small_object_aware_r50"],
+        "description": "Direct transfer: TSECAF-DETR-R50 trained on GWHD2021, evaluated on Wheat Ears.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r50vd_eval_wheat_ears.yml",
+        "resume": _checkpoint("tsecaf_detr_r50vd_180e_gwhd"),
+        "output_dir": _eval_dir("wheat_ears", "r50", "tsecaf_detr"),
+    },
+    "global_wheat_codalab_tsecaf_detr_r18": {
+        **EVAL_PRESETS["global_wheat_codalab_small_object_aware_r18"],
+        "description": "Direct transfer: TSECAF-DETR-R18 trained on GWHD2021, evaluated on Global Wheat CodaLab.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r18vd_eval_global_wheat_codalab.yml",
+        "resume": _checkpoint("tsecaf_detr_r18vd_120e_gwhd"),
+        "output_dir": _eval_dir("global_wheat_codalab", "r18", "tsecaf_detr"),
+    },
+    "global_wheat_codalab_tsecaf_detr_r34": {
+        **EVAL_PRESETS["global_wheat_codalab_small_object_aware_r34"],
+        "description": "Direct transfer: TSECAF-DETR-R34 trained on GWHD2021, evaluated on Global Wheat CodaLab.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r34vd_eval_global_wheat_codalab.yml",
+        "resume": _checkpoint("tsecaf_detr_r34vd_180e_gwhd"),
+        "output_dir": _eval_dir("global_wheat_codalab", "r34", "tsecaf_detr"),
+    },
+    "global_wheat_codalab_tsecaf_detr_r50": {
+        **EVAL_PRESETS["global_wheat_codalab_small_object_aware_r50"],
+        "description": "Direct transfer: TSECAF-DETR-R50 trained on GWHD2021, evaluated on Global Wheat CodaLab.",
+        "config": "configs/rtdetrv2/tsecaf_detr_r50vd_eval_global_wheat_codalab.yml",
+        "resume": _checkpoint("tsecaf_detr_r50vd_180e_gwhd"),
+        "output_dir": _eval_dir("global_wheat_codalab", "r50", "tsecaf_detr"),
+    },
+})
 
 
 def configure_torch_runtime() -> None:
@@ -165,10 +230,10 @@ def main(args) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Evaluate RT-DETRv2 GWHD2021 checkpoints with preset defaults."
+        description="Evaluate RT-DETRv2 and TSECAF-DETR wheat-head checkpoints with preset defaults."
     )
 
-    parser.add_argument("--preset", choices=sorted(EVAL_PRESETS), default="small_object_aware_rtdetr_r18")
+    parser.add_argument("--preset", choices=sorted(EVAL_PRESETS), default="tsecaf_detr_r18")
     parser.add_argument("-c", "--config", type=str, help="Config path. Defaults to the selected preset.")
     parser.add_argument("-r", "--resume", type=str, help="checkpoint for evaluation")
     parser.add_argument("-d", "--device", type=str, help="device")

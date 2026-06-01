@@ -1,4 +1,4 @@
-"""Export side-by-side RT-DETR feature heatmaps for paper figures."""
+"""Export evidence-pathway heatmaps for TSECAF-DETR paper figures."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ except ModuleNotFoundError:
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 VIS_PRESETS = {
     "gwhd_r50_baseline_vs_small_object_aware": {
-        "description": "Compare RT-DETRv2 R50 baseline and small-object-aware feature responses on GWHD2021 validation images.",
+        "description": "Compare RT-DETRv2-R50 and TSECAF-DETR-R50 evidence responses on GWHD2021 validation images.",
         "baseline_config": "configs/rtdetrv2/rtdetrv2_r50vd_180e_gwhd_baseline.yml",
         "baseline_resume": str(PROJECT_ROOT / "output" / "rtdetrv2_r50vd_180e_gwhd_baseline" / "best.pth"),
         "ours_config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_180e_gwhd.yml",
@@ -42,6 +42,14 @@ VIS_PRESETS = {
         "selection": "densest",
         "input_size": None,
     },
+}
+
+VIS_PRESETS["gwhd_r50_baseline_vs_tsecaf_detr"] = {
+    **VIS_PRESETS["gwhd_r50_baseline_vs_small_object_aware"],
+    "description": "Compare RT-DETRv2-R50 and TSECAF-DETR-R50 evidence responses on GWHD2021 validation images.",
+    "ours_config": "configs/rtdetrv2/tsecaf_detr_r50vd_180e_gwhd.yml",
+    "ours_resume": str(PROJECT_ROOT / "output" / "tsecaf_detr_r50vd_180e_gwhd" / "best.pth"),
+    "output_dir": str(PROJECT_ROOT / "vis_results" / "feature_maps" / "r50_baseline_vs_tsecaf_detr"),
 }
 
 
@@ -228,12 +236,12 @@ def save_panel(
     panels = [
         make_original_panel(image_np, boxes, f"Original ({len(boxes)} GT boxes)"),
         make_heatmap_panel(image_np, baseline_p3, "Baseline P3"),
-        make_heatmap_panel(image_np, ours_p3, "Ours P3"),
+        make_heatmap_panel(image_np, ours_p3, "TSECAF P3"),
         make_heatmap_panel(image_np, baseline_fusion, "Baseline Fused P3"),
-        make_heatmap_panel(image_np, ours_fusion, "Ours Fused P3"),
-        make_original_panel(image_np, [], "Ours Detail Gate (N/A)")
+        make_heatmap_panel(image_np, ours_fusion, "TSECAF Evidence P3"),
+        make_original_panel(image_np, [], "TSECAF Detail Gate (N/A)")
         if ours_detail_gate is None
-        else make_heatmap_panel(image_np, ours_detail_gate, "Ours Detail Gate"),
+        else make_heatmap_panel(image_np, ours_detail_gate, "TSECAF Detail Gate"),
     ]
 
     tile_w = max(panel.width for panel in panels)
@@ -331,12 +339,12 @@ def main(args) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Export RT-DETR feature heatmaps for paper figures.")
-    parser.add_argument("--preset", choices=sorted(VIS_PRESETS), default="gwhd_r50_baseline_vs_small_object_aware")
+    parser = argparse.ArgumentParser(description="Export evidence-pathway heatmaps for paper figures.")
+    parser.add_argument("--preset", choices=sorted(VIS_PRESETS), default="gwhd_r50_baseline_vs_tsecaf_detr")
     parser.add_argument("--baseline-config", type=str, help="Baseline config path.")
     parser.add_argument("--baseline-resume", type=str, help="Baseline checkpoint path.")
-    parser.add_argument("--ours-config", type=str, help="Improved model config path.")
-    parser.add_argument("--ours-resume", type=str, help="Improved model checkpoint path.")
+    parser.add_argument("--ours-config", type=str, help="TSECAF-DETR config path.")
+    parser.add_argument("--ours-resume", type=str, help="TSECAF-DETR checkpoint path.")
     parser.add_argument("-i", "--input", type=str, help="Input image or directory.")
     parser.add_argument("--ann-file", type=str, help="COCO annotation file for GT boxes.")
     parser.add_argument("-o", "--output-dir", type=str, help="Directory to save panel figures.")
@@ -377,8 +385,8 @@ if __name__ == "__main__":
     print(f"Selected preset: {args.preset} - {preset['description']}")
     print(f"Baseline config: {args.baseline_config}")
     print(f"Baseline checkpoint: {args.baseline_resume}")
-    print(f"Ours config: {args.ours_config}")
-    print(f"Ours checkpoint: {args.ours_resume}")
+    print(f"TSECAF-DETR config: {args.ours_config}")
+    print(f"TSECAF-DETR checkpoint: {args.ours_resume}")
     print(f"Input source: {args.input}")
     print(f"Annotation file: {args.ann_file}")
     print(f"Output dir: {args.output_dir}")

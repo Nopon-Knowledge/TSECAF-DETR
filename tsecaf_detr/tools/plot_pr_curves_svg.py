@@ -22,23 +22,25 @@ except ModuleNotFoundError:
 PR_PRESETS = {
     "gwhd_r50_baseline_vs_small_object_aware": {
         "title": "GWHD2021 PR Curve at IoU=0.50",
-        "subtitle": "RT-DETRv2 R50 baseline vs Small-Object-Aware",
-        "output_dir": str(PROJECT_ROOT / "vis_results" / "pr_curves" / "r50_baseline_vs_small_object_aware"),
-        "output_name": "r50_baseline_vs_small_object_aware_pr50.svg",
+        "subtitle": "RT-DETRv2-R50 baseline vs TSECAF-DETR-R50",
+        "output_dir": str(PROJECT_ROOT / "vis_results" / "pr_curves" / "r50_baseline_vs_tsecaf_detr"),
+        "output_name": "r50_baseline_vs_tsecaf_detr_pr50.svg",
         "series": [
             {
-                "name": "R50 Baseline",
+                "name": "RT-DETRv2-R50",
                 "eval_path": str(PROJECT_ROOT / "output" / "paper_eval" / "gwhd_r50_baseline" / "eval.pth"),
                 "color": "#1f77b4",
             },
             {
-                "name": "R50 + Small-Object-Aware",
+                "name": "TSECAF-DETR-R50",
                 "eval_path": str(PROJECT_ROOT / "output" / "paper_eval" / "gwhd_r50_small_object_aware" / "eval.pth"),
                 "color": "#d62728",
             },
         ],
     },
 }
+
+PR_PRESETS["gwhd_r50_baseline_vs_tsecaf_detr"] = PR_PRESETS["gwhd_r50_baseline_vs_small_object_aware"]
 
 
 def extract_pr(eval_path: Path) -> Dict[str, object]:
@@ -143,6 +145,6 @@ def main(args) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Plot PR curves from saved COCO eval dictionaries.")
-    parser.add_argument("--preset", choices=sorted(PR_PRESETS), default="gwhd_r50_baseline_vs_small_object_aware")
+    parser.add_argument("--preset", choices=sorted(PR_PRESETS), default="gwhd_r50_baseline_vs_tsecaf_detr")
     args = parser.parse_args()
     main(args)

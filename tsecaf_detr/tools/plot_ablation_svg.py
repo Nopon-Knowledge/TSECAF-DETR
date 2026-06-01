@@ -1,4 +1,4 @@
-"""Plot RT-DETR small-object-aware ablation figures from training logs."""
+"""Plot TSECAF-DETR pathway ablation figures from training logs."""
 
 from __future__ import annotations
 
@@ -19,10 +19,10 @@ except ModuleNotFoundError:
 
 ABLATION_PRESETS = {
     "gwhd_r50_small_object_aware_ablation": {
-        "title": "Ablation Study on GWHD2021 with RT-DETRv2-R50",
-        "subtitle": "Best checkpoints are selected by AP50-95, and AP50 is reported from the same epoch",
+        "title": "Pathway Ablation on GWHD2021 with RT-DETRv2-R50",
+        "subtitle": "Controlled probes of evidence formation and decoder-query allocation",
         "output_dir": str(PROJECT_ROOT / "vis_results" / "ablation"),
-        "output_name": "gwhd_r50_small_object_aware_ablation.svg",
+        "output_name": "gwhd_r50_tsecaf_pathway_ablation.svg",
         "series": [
             {
                 "label": "Baseline",
@@ -30,28 +30,32 @@ ABLATION_PRESETS = {
                 "color": "#1f77b4",
             },
             {
-                "label": "+ wheat_fusion",
+                "label": "Context-detail representation",
                 "log": str(PROJECT_ROOT / "output" / "rtdetrv2_r50vd_180e_gwhd_ablation_wheat_fusion" / "log.txt"),
                 "color": "#2ca02c",
             },
             {
-                "label": "+ detail_enhance",
+                "label": "Detail-branch emphasis",
                 "log": str(PROJECT_ROOT / "output" / "rtdetrv2_r50vd_180e_gwhd_ablation_detail_enhance" / "log.txt"),
                 "color": "#ff7f0e",
             },
             {
-                "label": "+ agnostic_small",
+                "label": "Compact-query allocation",
                 "log": str(PROJECT_ROOT / "output" / "rtdetrv2_r50vd_180e_gwhd_ablation_agnostic_small" / "log.txt"),
                 "color": "#9467bd",
             },
             {
-                "label": "+ full Small-Object-Aware",
+                "label": "TSECAF-DETR pathway",
                 "log": str(PROJECT_ROOT / "output" / "small_object_aware_rtdetr_r50vd_180e_gwhd" / "log.txt"),
                 "color": "#d62728",
             },
         ],
     },
 }
+
+ABLATION_PRESETS["gwhd_r50_tsecaf_pathway_ablation"] = ABLATION_PRESETS[
+    "gwhd_r50_small_object_aware_ablation"
+]
 
 
 def extract_best_metrics(log_path: Path) -> Dict[str, float]:
@@ -175,7 +179,7 @@ def save_svg(preset: Dict[str, object], rows: List[Dict[str, float]]) -> Path:
 
     legend_x = width - margin_right - 250
     legend_y = 52
-    legend = [("Incremental Ablations", "#6baed6"), ("Full Small-Object-Aware", "#d62728")]
+    legend = [("Pathway probes", "#6baed6"), ("Full TSECAF-DETR", "#d62728")]
     for idx, (label, color) in enumerate(legend):
         y = legend_y + idx * 24
         parts.append(f'<rect x="{legend_x}" y="{y - 10}" width="18" height="18" fill="{color}" stroke="#4b5563" stroke-width="0.8" />')
@@ -214,10 +218,10 @@ def save_svg(preset: Dict[str, object], rows: List[Dict[str, float]]) -> Path:
         label_x = x + bar_width / 2
         label_lines = {
             "Baseline": ["Baseline"],
-            "+ wheat_fusion": ["+ wheat_", "fusion"],
-            "+ detail_enhance": ["+ detail_", "enhance"],
-            "+ agnostic_small": ["+ agnostic_", "small"],
-            "+ full Small-Object-Aware": ["+ full", "Small-Object", "Aware"],
+            "Context-detail representation": ["Context-detail", "representation"],
+            "Detail-branch emphasis": ["Detail-branch", "emphasis"],
+            "Compact-query allocation": ["Compact-query", "allocation"],
+            "TSECAF-DETR pathway": ["TSECAF-DETR", "pathway"],
         }.get(row["label"], [row["label"]])
         for line_idx, line in enumerate(label_lines):
             y = margin_top + plot_h + 28 + line_idx * 16
@@ -251,7 +255,7 @@ def main(args) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Plot RT-DETR small-object-aware ablation bars to an SVG file.")
-    parser.add_argument("--preset", choices=sorted(ABLATION_PRESETS), default="gwhd_r50_small_object_aware_ablation")
+    parser = argparse.ArgumentParser(description="Plot TSECAF-DETR pathway ablation bars to an SVG file.")
+    parser.add_argument("--preset", choices=sorted(ABLATION_PRESETS), default="gwhd_r50_tsecaf_pathway_ablation")
     args = parser.parse_args()
     main(args)

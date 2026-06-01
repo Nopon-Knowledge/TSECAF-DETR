@@ -1,0 +1,5 @@
+__include__: [
+  './small_object_aware_rtdetr_r18vd_eval_wheat_ears.yml',
+]
+
+output_dir: ./output/eval_tsecaf_detr_r18vd_wheat_ears

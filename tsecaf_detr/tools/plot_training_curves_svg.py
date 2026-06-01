@@ -20,7 +20,7 @@ except ModuleNotFoundError:
 
 PLOTS_PRESETS = {
     "gwhd_r50_baseline_vs_small_object_aware": {
-        "description": "Loss/AP/AP50 curves for RT-DETRv2 R50 baseline vs Small-Object-Aware on GWHD2021.",
+        "description": "Loss/AP/AP50 curves for RT-DETRv2-R50 baseline vs TSECAF-DETR-R50 on GWHD2021.",
         "series": [
             {
                 "name": "R50 Baseline",
@@ -28,16 +28,16 @@ PLOTS_PRESETS = {
                 "color": "#1f77b4",
             },
             {
-                "name": "R50 + Small-Object-Aware",
+                "name": "TSECAF-DETR-R50",
                 "log": str(PROJECT_ROOT / "output" / "small_object_aware_rtdetr_r50vd_180e_gwhd" / "log.txt"),
                 "color": "#d62728",
             },
         ],
-        "output_dir": str(PROJECT_ROOT / "vis_results" / "training_curves" / "r50_baseline_vs_small_object_aware"),
-        "output_name": "r50_baseline_vs_small_object_aware_training_curves.svg",
+        "output_dir": str(PROJECT_ROOT / "vis_results" / "training_curves" / "r50_baseline_vs_tsecaf_detr"),
+        "output_name": "r50_baseline_vs_tsecaf_detr_training_curves.svg",
     },
     "gwhd_r34_baseline_vs_small_object_aware": {
-        "description": "Loss/AP/AP50 curves for RT-DETRv2 R34 baseline vs Small-Object-Aware on GWHD2021.",
+        "description": "Loss/AP/AP50 curves for RT-DETRv2-R34 baseline vs TSECAF-DETR-R34 on GWHD2021.",
         "series": [
             {
                 "name": "R34 Baseline",
@@ -45,15 +45,20 @@ PLOTS_PRESETS = {
                 "color": "#1f77b4",
             },
             {
-                "name": "R34 + Small-Object-Aware",
+                "name": "TSECAF-DETR-R34",
                 "log": str(PROJECT_ROOT / "output" / "small_object_aware_rtdetr_r34vd_180e_gwhd" / "log.txt"),
                 "color": "#d62728",
             },
         ],
-        "output_dir": str(PROJECT_ROOT / "vis_results" / "training_curves" / "r34_baseline_vs_small_object_aware"),
-        "output_name": "r34_baseline_vs_small_object_aware_training_curves.svg",
+        "output_dir": str(PROJECT_ROOT / "vis_results" / "training_curves" / "r34_baseline_vs_tsecaf_detr"),
+        "output_name": "r34_baseline_vs_tsecaf_detr_training_curves.svg",
     },
 }
+
+PLOTS_PRESETS.update({
+    "gwhd_r50_baseline_vs_tsecaf_detr": PLOTS_PRESETS["gwhd_r50_baseline_vs_small_object_aware"],
+    "gwhd_r34_baseline_vs_tsecaf_detr": PLOTS_PRESETS["gwhd_r34_baseline_vs_small_object_aware"],
+})
 
 
 def parse_log(log_path: Path) -> List[Dict[str, float]]:
@@ -225,6 +230,6 @@ def main(args) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Plot RT-DETR training curves to an SVG file.")
-    parser.add_argument("--preset", choices=sorted(PLOTS_PRESETS), default="gwhd_r50_baseline_vs_small_object_aware")
+    parser.add_argument("--preset", choices=sorted(PLOTS_PRESETS), default="gwhd_r50_baseline_vs_tsecaf_detr")
     args = parser.parse_args()
     main(args)

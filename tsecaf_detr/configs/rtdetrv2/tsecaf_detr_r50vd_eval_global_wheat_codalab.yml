@@ -1,0 +1,5 @@
+__include__: [
+  './small_object_aware_rtdetr_r50vd_eval_global_wheat_codalab.yml',
+]
+
+output_dir: ./output/eval_tsecaf_detr_r50vd_global_wheat_codalab

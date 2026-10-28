@@ -40,8 +40,20 @@ python tools/plot_pr_curves_svg.py --preset gwhd_r50_baseline_vs_tsecaf_detr
 ## Utilities
 
 ```bash
-python tools/prepare_wheat_datasets.py --preset wheat_ears
-python tools/prepare_wheat_datasets.py --preset global_wheat_codalab
+python tools/prepare_wheat_datasets.py --dataset wheat_ears
+python tools/prepare_wheat_datasets.py --dataset global_wheat_codalab
 python tools/run_profile.py -c configs/rtdetrv2/tsecaf_detr_r50vd_180e_gwhd.yml
 python tools/export_onnx.py -c configs/rtdetrv2/tsecaf_detr_r50vd_180e_gwhd.yml -r output/tsecaf_detr_r50vd_180e_gwhd/best.pth -o tsecaf_detr_r50.onnx -s 1024 --check
 ```
+
+Before reporting zero-shot transfer results, audit exact and near-duplicate overlap between the source training images and every target validation split:
+
+```bash
+python tools/audit_dataset_overlap.py \
+  --train /path/to/gwhd/train/images \
+  --eval /path/to/target/val/images \
+  --threshold 4 \
+  --output overlap_audit.json
+```
+
+The report combines byte-level SHA-256 matching with 64-bit dHash screening and lists every cross-set pair that requires manual review.

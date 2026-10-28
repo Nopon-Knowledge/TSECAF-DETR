@@ -373,7 +373,13 @@ class HybridEncoder(nn.Module):
         self.wheat_detail_enhance = wheat_detail_enhance
         if wheat_fusion_stages is None:
             wheat_fusion_stages = list(range(len(in_channels) - 1))
-        self.wheat_fusion_stages = set(wheat_fusion_stages)
+        self.wheat_fusion_stages = {int(stage) for stage in wheat_fusion_stages}
+        valid_fusion_stages = set(range(len(in_channels) - 1))
+        invalid_fusion_stages = self.wheat_fusion_stages - valid_fusion_stages
+        if invalid_fusion_stages:
+            raise ValueError(
+                f'wheat_fusion_stages must be drawn from {sorted(valid_fusion_stages)}, '
+                f'got {sorted(invalid_fusion_stages)}')
         
         # channel projection
         self.input_proj = nn.ModuleList()
@@ -416,17 +422,20 @@ class HybridEncoder(nn.Module):
         if self.wheat_fusion:
             # TSECAF-DETR evidence formation: coordinate semantic context and
             # local detail before encoder proposals are generated.
-            self.wheat_fusion_blocks = nn.ModuleList([
-                WheatTSECAFFusion(
+            # Keep the stage number in the module key so checkpoints retain
+            # the historical ``wheat_fusion_blocks.<stage>.*`` path while
+            # inactive stages no longer register unused trainable parameters.
+            self.wheat_fusion_blocks = nn.ModuleDict({
+                str(stage): WheatTSECAFFusion(
                     hidden_dim,
                     stats_reduction=wheat_stats_reduction,
                     context_reduction=wheat_context_reduction,
                     context_kernel_size=wheat_context_kernel_size,
                     act=act)
-                for _ in range(len(in_channels) - 1)
-            ])
+                for stage in sorted(self.wheat_fusion_stages)
+            })
         else:
-            self.wheat_fusion_blocks = nn.ModuleList()
+            self.wheat_fusion_blocks = nn.ModuleDict()
 
         if self.wheat_detail_enhance:
             self.low_level_detail = WheatDetailEnhancer(hidden_dim, act=act)
@@ -455,6 +464,35 @@ class HybridEncoder(nn.Module):
                     self.hidden_dim, self.pe_temperature)
                 setattr(self, f'pos_embed{idx}', pos_embed)
                 # self.register_buffer(f'pos_embed{idx}', pos_embed)
+
+    def _load_from_state_dict(
+            self,
+            state_dict,
+            prefix,
+            local_metadata,
+            strict,
+            missing_keys,
+            unexpected_keys,
+            error_msgs):
+        """Discard parameters from fusion stages that legacy code registered but never used."""
+        fusion_prefix = f'{prefix}wheat_fusion_blocks.'
+        active_stage_keys = set(self.wheat_fusion_blocks.keys())
+        if self.wheat_fusion:
+            for key in list(state_dict):
+                if not key.startswith(fusion_prefix):
+                    continue
+                stage_key = key[len(fusion_prefix):].split('.', 1)[0]
+                if stage_key.isdigit() and stage_key not in active_stage_keys:
+                    state_dict.pop(key)
+
+        super()._load_from_state_dict(
+            state_dict,
+            prefix,
+            local_metadata,
+            strict,
+            missing_keys,
+            unexpected_keys,
+            error_msgs)
 
     @staticmethod
     def build_2d_sincos_position_embedding(w, h, embed_dim=256, temperature=10000.):
@@ -505,7 +543,7 @@ class HybridEncoder(nn.Module):
             upsample_feat = F.interpolate(feat_heigh, scale_factor=2., mode='nearest')
             fusion_stage = len(self.in_channels) - 1 - idx
             if self.wheat_fusion and fusion_stage in self.wheat_fusion_stages:
-                fusion_input = self.wheat_fusion_blocks[fusion_stage](upsample_feat, feat_low)
+                fusion_input = self.wheat_fusion_blocks[str(fusion_stage)](upsample_feat, feat_low)
             else:
                 fusion_input = torch.concat([upsample_feat, feat_low], dim=1)
             inner_out = self.fpn_blocks[len(self.in_channels)-1-idx](fusion_input)

@@ -11,8 +11,8 @@ evaluation, visualization, export, and profiling instructions.
 Key entry points:
 
 - `configs/rtdetrv2/`: baseline, TSECAF-DETR, pathway-ablation, and direct-transfer configs.
-- `src/zoo/rtdetr/hybrid_encoder.py`: context-detail evidence formation.
-- `src/zoo/rtdetr/rtdetrv2_decoder.py`: compact-query allocation.
+- `src/zoo/rtdetr/hybrid_encoder.py`: image-conditioned context-detail exchange and candidate formation.
+- `src/zoo/rtdetr/rtdetrv2_decoder.py`: fixed-budget proposal selection; `area_penalty` is the coefficient \(\lambda\), and `anchor_grid_size` is the anchor scale \(g\). The older `query_size_prior` config key remains supported.
 - `tools/train_gwhd_a40.py`: training presets.
 - `tools/test_gwhd_a40.py`: GWHD2021 and cross-dataset evaluation presets.
 - `tools/prepare_wheat_datasets.py`: dataset conversion helpers.

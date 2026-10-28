@@ -79,12 +79,12 @@ TRAINING_PRESETS = {
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "ablation_agnostic_small_r50": {
-        "description": "Pathway probe: compact-query allocation before decoder refinement.",
+        "description": "Pathway probe: area-penalized proposal selection under a fixed query budget.",
         "config": "configs/rtdetrv2/rtdetrv2_r50vd_180e_gwhd_ablation_agnostic_small.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
     "ablation_full_small_object_aware_r50": {
-        "description": "Full TSECAF-DETR-R50 evidence-to-query pathway.",
+        "description": "Full TSECAF-DETR-R50 candidate-coverage pathway.",
         "config": "configs/rtdetrv2/small_object_aware_rtdetr_r50vd_180e_gwhd.yml",
         "tuning_candidates": checkpoint_candidates("rtdetrv2_r50vd_6x_coco_ema.pth"),
     },
@@ -93,17 +93,17 @@ TRAINING_PRESETS = {
 TRAINING_PRESETS.update({
     "tsecaf_detr_r18": {
         **TRAINING_PRESETS["small_object_aware_rtdetr_r18"],
-        "description": "TSECAF-DETR-R18 representation-query co-design on GWHD2021.",
+        "description": "TSECAF-DETR-R18 candidate-coverage design on GWHD2021.",
         "config": "configs/rtdetrv2/tsecaf_detr_r18vd_120e_gwhd.yml",
     },
     "tsecaf_detr_r34": {
         **TRAINING_PRESETS["small_object_aware_rtdetr_r34"],
-        "description": "TSECAF-DETR-R34 representation-query co-design on GWHD2021.",
+        "description": "TSECAF-DETR-R34 candidate-coverage design on GWHD2021.",
         "config": "configs/rtdetrv2/tsecaf_detr_r34vd_180e_gwhd.yml",
     },
     "tsecaf_detr_r50": {
         **TRAINING_PRESETS["small_object_aware_rtdetr_r50"],
-        "description": "TSECAF-DETR-R50 representation-query co-design on GWHD2021.",
+        "description": "TSECAF-DETR-R50 candidate-coverage design on GWHD2021.",
         "config": "configs/rtdetrv2/tsecaf_detr_r50vd_180e_gwhd.yml",
     },
     "pathway_context_detail_r50": {
@@ -116,11 +116,11 @@ TRAINING_PRESETS.update({
     },
     "pathway_compact_query_r50": {
         **TRAINING_PRESETS["ablation_agnostic_small_r50"],
-        "description": "Pathway probe: compact-query allocation before decoder refinement.",
+        "description": "Pathway probe: area-penalized proposal selection under a fixed query budget.",
     },
     "pathway_full_tsecaf_r50": {
         **TRAINING_PRESETS["ablation_full_small_object_aware_r50"],
-        "description": "Full TSECAF-DETR-R50 evidence-to-query pathway.",
+        "description": "Full TSECAF-DETR-R50 candidate-coverage pathway.",
     },
 })
 

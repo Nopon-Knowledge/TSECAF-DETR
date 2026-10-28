@@ -312,7 +312,8 @@ class RTDETRTransformerv2(nn.Module):
                  cross_attn_method='default', 
                  query_select_method='default',
                  anchor_grid_size=0.05,
-                 query_size_prior=0.0):
+                 query_size_prior=0.0,
+                 area_penalty=None):
         super().__init__()
         assert len(feat_channels) <= num_levels
         assert len(feat_strides) == len(feat_channels)
@@ -335,8 +336,16 @@ class RTDETRTransformerv2(nn.Module):
         assert cross_attn_method in ('default', 'discrete'), ''
         self.cross_attn_method = cross_attn_method
         self.query_select_method = query_select_method
+        # In TSECAF-DETR, these are the geometric prior parameters g and lambda.
         self.anchor_grid_size = anchor_grid_size
-        self.query_size_prior = query_size_prior
+        if area_penalty is None:
+            area_penalty = query_size_prior
+        elif query_size_prior not in (0.0, area_penalty):
+            raise ValueError(
+                'area_penalty and legacy query_size_prior specify different values')
+        self.area_penalty = float(area_penalty)
+        # Retain the old attribute name for downstream scripts and checkpoints.
+        self.query_size_prior = self.area_penalty
 
         # backbone feature projection
         self._build_input_proj_layer(feat_channels)
@@ -542,11 +551,11 @@ class RTDETRTransformerv2(nn.Module):
         elif self.query_select_method == 'agnostic':
             _, topk_ind = torch.topk(outputs_logits.squeeze(-1), topk, dim=-1)
         elif self.query_select_method == 'agnostic_small':
-            # TSECAF-DETR query allocation: keep decoder capacity aligned with
-            # compact proposals exposed by the upstream evidence pathway.
+            # TSECAF-DETR ranks with q_i = s_i - lambda * (w_i * h_i),
+            # where area_penalty is lambda and boxes are normalized.
             pred_boxes = F.sigmoid(outputs_coords_unact)
             pred_area = pred_boxes[..., 2] * pred_boxes[..., 3]
-            scores = outputs_logits.squeeze(-1) - self.query_size_prior * pred_area
+            scores = outputs_logits.squeeze(-1) - self.area_penalty * pred_area
             _, topk_ind = torch.topk(scores, topk, dim=-1)
         
         topk_ind: torch.Tensor

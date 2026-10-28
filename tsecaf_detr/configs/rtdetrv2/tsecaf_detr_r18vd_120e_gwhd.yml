@@ -3,3 +3,8 @@ __include__: [
 ]
 
 output_dir: ./output/tsecaf_detr_r18vd_120e_gwhd
+
+RTDETRTransformerv2:
+  query_select_method: agnostic_small
+  anchor_grid_size: 0.04
+  area_penalty: 8.0
